@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use Spatie\YamlFrontMatter\YamlFrontMatter;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,9 +19,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get("/files", function(){
+    $doc =YamlFrontMatter::parseFile(resource_path("pages/content.html"));
+    dd($doc->body());
+});
 
 Route::prefix('/')->group( fn() => (
     Route::get("sign_up",[AuthController::class, "render_sign_up"])->name("render_sign_up")),
-    Route::post('sign_up', [AuthController::class, "sign_up_user"])->name("sign_up_user")
+    // login
+    // forget password
+    // reset password
 );
 
