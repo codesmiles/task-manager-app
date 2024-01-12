@@ -30,22 +30,22 @@ class UserController extends Controller
         | validate request
         |--------------------------------------------------------------------------
         */
-        $validate_request = Validator::make(
-            $payload,
-            [
-                "name" => "string|required",
-                "role" => "string|required|in:member,admin",
-                "email" => "string|required|email|unique:users,email",
-                "password" => "string|required|confirmed|regex:/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/"
-            ]
-        );
+        // $validate_request = Validator::make(
+        //     $payload,
+        //     [
+        //         "name" => "string|required",
+        //         "role" => "string|required|in:member,admin",
+        //         "email" => "string|required|email|unique:users,email",
+        //         "password" => "string|required|confirmed|regex:/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/"
+        //     ]
+        // );
 
-        if ($validate_request->fails()) {
-            return response()->json([
-                "successful" => false,
-                "message" => $validate_request->errors()
-            ]);
-        }
+        // if ($validate_request->fails()) {
+        //     return response()->json([
+        //         "successful" => false,
+        //         "message" => $validate_request->errors()
+        //     ]);
+        // }
 
          /*
         |--------------------------------------------------------------------------
@@ -59,12 +59,7 @@ class UserController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        // $user = User::find($request->user()->id)->update($request->only(["name","email","role","password"]));
 
-        // return response()->json([
-        //     "successful" => true,
-        //     "payload" => $user
-        // ], Response::HTTP_OK);
     }
 
     /**

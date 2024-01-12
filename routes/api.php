@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TasksController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,10 +33,29 @@ use App\Http\Controllers\UserController;
 // });
 
 Route::group(["prefix" => "/user", 'middleware' => ['auth:sanctum']],function(){
+    /*
+    |--------------------------------------------------------------------------
+    | Users
+    |--------------------------------------------------------------------------
+    */
     Route::get("/", [UserController::class, "show"]);
     Route::post("/update", [UserController::class, "update"]);
 
+    Route::post('/store', [TasksController::class, "store"]);
 });
+/*
+|--------------------------------------------------------------------------
+| tasks
+|--------------------------------------------------------------------------
+*/
+Route::prefix('tasks')->group(function () {
+    Route::get('/', [TasksController::class, "index"]);
+    // Route::post('/store', [TasksController::class, "store"]);
+    Route::get('/update/{id}', [TasksController::class, "update"]);
+    Route::get('/delete/{id}', [TasksController::class, "destroy"]);
+});
+
+
 Route::group(["prefix"=>"/auth"],function(){
     Route::post('/sign_up', [AuthController::class, "sign_up_user"])->name("sign_up_user");
     Route::post('/login', [AuthController::class, "login_user"])->name("login_user");
