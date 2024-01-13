@@ -42,8 +42,6 @@ class TasksController extends Controller
                 "category" => "string|required",
                 "priority" => "string|required",
                 "description" => "string|required",
-                // "status" => "string|required", //"is_successful", "status"
-                // "is_successful" => "boolean|required"
             ]
         );
 
@@ -54,7 +52,7 @@ class TasksController extends Controller
             ]);
         }
         // store the data
-        $create_task = Tasks::create($payload);
+        Tasks::create($payload);
 
         // return successful response
         return response()->json([
@@ -69,8 +67,7 @@ class TasksController extends Controller
      */
     public function update(Request $request, Tasks $tasks, $id)
     {
-        dd($request->all());
-        $update_data = $tasks::find($id)->update($$request->all());
+        $update_data = $tasks::find($id)->update($request->all());
 
         return response()->json([
             "successful" => true,

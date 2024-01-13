@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TasksController;
+use App\Http\Controllers\CommentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,21 +41,30 @@ Route::group(["prefix" => "/user", 'middleware' => ['auth:sanctum']],function(){
     */
     Route::get("/", [UserController::class, "show"]);
     Route::post("/update", [UserController::class, "update"]);
-
-    Route::post('/store', [TasksController::class, "store"]);
 });
 /*
 |--------------------------------------------------------------------------
 | tasks
 |--------------------------------------------------------------------------
 */
-Route::prefix('tasks')->group(function () {
+Route::prefix('tasks')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/', [TasksController::class, "index"]);
-    // Route::post('/store', [TasksController::class, "store"]);
+    Route::post('/store', [TasksController::class, "store"]);
     Route::get('/update/{id}', [TasksController::class, "update"]);
     Route::get('/delete/{id}', [TasksController::class, "destroy"]);
 });
 
+/*
+|--------------------------------------------------------------------------
+| Comments
+|--------------------------------------------------------------------------
+*/
+Route::prefix('comments')->middleware(['auth:sanctum'])->group(function () {
+    Route::get('/', [CommentsController::class, "index"]);
+    Route::post('/store', [CommentsController::class, "store"]);
+    Route::get('/update/{id}', [CommentsController::class, "update"]);
+    Route::get('/delete/{id}', [CommentsController::class, "destroy"]);
+});
 
 Route::group(["prefix"=>"/auth"],function(){
     Route::post('/sign_up', [AuthController::class, "sign_up_user"])->name("sign_up_user");
