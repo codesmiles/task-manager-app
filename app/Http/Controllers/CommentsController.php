@@ -6,6 +6,7 @@ use App\Models\Comments;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\CommentsResource;
+use Illuminate\Support\Facades\Validator;
 
 class CommentsController extends Controller
 {
@@ -30,10 +31,22 @@ class CommentsController extends Controller
     public function store(Request $request)
     {
         //validate incoming requests
+        $validation = Validator::make($request->all(),[
+            "user_id" => "string|required",
+            "task_id" =>'string|required',
+            "comment" => "string|required"
+        ]);
 
-
+        if($validation->fails()){
+            return response()->json([
+                "successful" => false,
+                "message" => "validation error",
+                "errors" => $validation->errors(),
+            ],Response::HTTP_BAD_REQUEST);
+        }
         // save payload
-        //$payload = Comments::create($payload);
+        dd($request->all());
+        $payload = Comments::create($request->all());
 
 
         // return response()->json([

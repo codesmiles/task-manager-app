@@ -22,6 +22,6 @@ class Comments extends Model
 
     public function Tasks()
     {
-        return $this->belongs(Tasks::class);
+        return $this->belongsTo(Tasks::class);
     }
 }
