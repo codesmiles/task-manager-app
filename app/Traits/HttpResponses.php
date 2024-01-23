@@ -5,7 +5,7 @@ namespace App\Traits;
 trait HttpResponses
 {
 
-    protected function sendResponse($data, $isSuccessful, $code, $message = null)
+    protected function sendResponse($data, $isSuccessful, $code, $message = null): array|object
     {
         return response()->json([
             "successful" => $isSuccessful,

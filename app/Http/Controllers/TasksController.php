@@ -2,64 +2,72 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskRequest;
+use App\Http\Resources\TaskResource;
 use App\Models\Tasks;
+use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
+use function PHPUnit\Framework\isEmpty;
 
 class TasksController extends Controller
 {
+    use HttpResponses;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        if (!Auth::guard('user')) {
+            return $this->sendResponse([], false, Response::HTTP_UNAUTHORIZED, "UNAUTHOORIZED USER");
+        }
+
         $payload = Tasks::all();
 
-        return response()->json([
-            "successful" => false,
-            "message" => "error uploading data to the db",
-            "payload" => $payload
-            ], Response::HTTP_OK);
+        if (count($payload) < 1) {
+            return $this->sendResponse([], false, Response::HTTP_BAD_REQUEST, "NO TASKS ON THE DATABASE");
+        }
+
+        return $this->sendResponse(TaskResource::collection($payload), true, Response::HTTP_OK, "TASK LISTS");
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TaskRequest $request)
     {
-        $request->merge(['deadline' => now()->addHour(2),"user_id" => $request->user()["id"]]);
-        $payload = $request->only(["title", "user_id", "category", "deadline", "description", "priority","user_id","deadline"]);
+        /*
+        |--------------------------------------------------------------------------
+        | set payload
+        |--------------------------------------------------------------------------
+        */
+        $request->merge(['deadline' => now()->addHour(2), "user_id" => $request->user()["id"]]);
+        $payload = $request->only(["title", "user_id", "category", "deadline", "description", "priority", "user_id", "deadline"]);
 
-        // validate request
-        $validate_request = Validator::make(
-            $payload,
-            [
-                "title" => "string|required",
-                "deadline" => "date|required",
-                "user_id" => "numeric|required",
-                "category" => "string|required",
-                "priority" => "string|required",
-                "description" => "string|required",
-            ]
-        );
+        /*
+        |--------------------------------------------------------------------------
+        | validate request
+        |--------------------------------------------------------------------------
+        */
+        $request->validated($request->all());
 
-        if ($validate_request->fails()) {
-            return response()->json([
-                "successful" => false,
-                "message" => $validate_request->errors()
-            ]);
+        /*
+        |--------------------------------------------------------------------------
+        | login
+        |--------------------------------------------------------------------------
+        */
+        if (!Auth::attempt($payload)) {
+            return $this->sendResponse(null, false, Response::HTTP_NOT_ACCEPTABLE, "NO TASKS");
         }
-        // store the data
-        Tasks::create($payload);
 
-        // return successful response
-        return response()->json([
-            "successful" => true,
-            "message" => "successfully uploaded to the db",
-            "payload" => $payload
-        ], Response::HTTP_OK);
+        // store the data
+        $task = Tasks::create($payload);
+
+        // return response
+        return $this->sendResponse(new TaskResource($task), true, Response::HTTP_OK, "successfully uploaded to the db");
     }
 
     /**
@@ -74,13 +82,12 @@ class TasksController extends Controller
             "message" => "data successfully updated",
             "payload" => $update_data
         ], Response::HTTP_OK);
-
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tasks $tasks,$id)
+    public function destroy(Tasks $tasks, $id)
     {
         $tasks::destroy($id);
 
@@ -88,6 +95,5 @@ class TasksController extends Controller
             "successful" => true,
             "message" => "successfully deleted"
         ], Response::HTTP_OK);
-
     }
 }
