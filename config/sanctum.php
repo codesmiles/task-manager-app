@@ -46,7 +46,7 @@ return [
     |
     */
 
-    'expiration' => null,
+    'expiration' => null, //or 43800 if you want to change it later
 
     /*
     |--------------------------------------------------------------------------
