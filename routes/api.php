@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FilesController;
 use App\Http\Controllers\TasksController;
 use App\Http\Controllers\CommentsController;
 
@@ -33,15 +34,17 @@ use App\Http\Controllers\CommentsController;
 //     return $request->user();
 // });
 
+/*
+|--------------------------------------------------------------------------
+| Users
+|--------------------------------------------------------------------------
+*/
 Route::group(["prefix" => "/user", 'middleware' => ['auth:sanctum']],function(){
-    /*
-    |--------------------------------------------------------------------------
-    | Users
-    |--------------------------------------------------------------------------
-    */
     Route::get("/", [UserController::class, "show"]);
     Route::post("/update", [UserController::class, "update"]);
+    Route::post("/logout", [AuthController::class, "update"]);
 });
+
 /*
 |--------------------------------------------------------------------------
 | tasks
@@ -66,10 +69,24 @@ Route::prefix('comments')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/delete/{id}', [CommentsController::class, "destroy"]);
 });
 
+/*
+|--------------------------------------------------------------------------
+| auth
+|--------------------------------------------------------------------------
+*/
 Route::group(["prefix"=>"/auth"],function(){
-    Route::post('/sign_up', [AuthController::class, "sign_up_user"])->name("sign_up_user");
+    Route::post('/signup', [AuthController::class, "sign_up_user"])->name("sign_up_user");
     Route::post('/login', [AuthController::class, "login_user"])->name("login_user");
     // login
     // forget password
     // reset password
+});
+
+/*
+|--------------------------------------------------------------------------
+| Comments
+|--------------------------------------------------------------------------
+*/
+Route::group(["prefix" => "/files"],function(){
+Route::post("/upload",[FilesController::class, "Upload"]);
 });

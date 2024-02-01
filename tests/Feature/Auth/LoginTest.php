@@ -8,15 +8,17 @@ use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Factory;
 
 class LoginTest extends TestCase
 {
 
     public function test_error_login_endpoint()
     {
+
         $response = $this->post('/api/auth/login', [
-            'email' => 'test@example.com',
-            'password' => '!Apassword123',
+            'email' => 'smiles@example.com',
+            'password' => 'Aa!12345678',
 
         ]);
 
@@ -41,28 +43,15 @@ class LoginTest extends TestCase
         $response->assertInvalid();
     }
 
-    // public function test_login_endpoint(){
-    //     $response = $this->post('/api/auth/login',[
-    //         'email' => 'code@gmail.com',
-    //         'password' => 'Aa1!2345678',
-    //     ]);
-
-    //     $response->assertStatus(200);
-    // }
-
     public function testUserLoginWithValidCredentials()
     {
-        // $user = factory(User::class)->create([
-        //     'email' => 'code@gmail.com',
-        //     'password' => bcrypt('password123'),
-        // ]);
-
         $response = $this->post('/api/auth/login', [
-            'email' => 'code@gmail.com',
-            'password' => 'Aa1!2345678',
+            'email' => 'smiles@example.com',
+            'password' => 'Aa!12345678',
         ]);
 
-        $response->assertStatus(Response::HTTP_OK); // Assert the expected response status code
+    
+        $response->assertStatus(Response::HTTP_OK);
 
         $response->assertJsonStructure([
             "successful",
@@ -86,10 +75,10 @@ class LoginTest extends TestCase
     // public function testUserLoginWithInvalidCredentials()
     // {
     //     $response = $this->post('/api/auth/login', [
-    //         'email' => 'test@example.com',
-    //         // 'password' => '1234eakAd!',
+    //         'email' => 'code@gmail.com',
+    //         // 'password' => 'Aa1!2345678',
     //     ]);
-    //     dd($response);
+
     //     $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE); // Assert the expected response status code
 
     //     // $response->assertJsonStructure([

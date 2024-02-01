@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -47,7 +47,7 @@ class AuthController extends Controller
         */
         return $this->sendResponse(
             [
-                "user" => $createUser,
+                "user" => new UserResource($createUser),
                 "token" => $createUser->createToken("API Token of" . $createUser->name)->plainTextToken
             ],
             true,
@@ -68,7 +68,7 @@ class AuthController extends Controller
         |--------------------------------------------------------------------------
         */
         $request->validated($request->all());
-        
+
         /*
         |--------------------------------------------------------------------------
         | login

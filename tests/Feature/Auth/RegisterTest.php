@@ -2,19 +2,31 @@
 
 namespace Tests\Feature\Auth;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
+use Illuminate\Support\Facades\Factory;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RegisterTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_example(): void
-    {
-        $response = $this->get('/');
+    use RefreshDatabase;
 
-        $response->assertStatus(200);
+    public function test_signUpUser_payload_validation(){
+        $response = $this->post("/api/auth/signup",[
+            "name" => "mistake smiles",
+            "role" => "member",
+            "email" => "smiles@example.com",
+            "password" =>"Aa!12345678",
+            "password_confirmation" => "Aa!12345678"
+        ]);
+
+        // $user = factory(User::class)->make();
+
+        $response->assertValid();
     }
+    // public function test_signUpUser_payload_validation(){
+
+    // }
+
 }
